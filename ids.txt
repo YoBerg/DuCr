@@ -1,0 +1,10 @@
+------------- Weapons
+01 - Knife
+02 - Sword and Shield
+03 - Sword
+11 - Blood Sword
+99 - Sword of The Ancients
+------------- Health
+1 - Full Heart
+2 - Half Heart
+3 - Empty Heart

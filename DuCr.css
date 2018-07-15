@@ -1,0 +1,129 @@
+.Title {
+    margin:20px;
+    margin-bottom:0px;
+    border:0px;
+    padding:0px;
+    text-align:center;
+    font-family: 'Fondamento';
+    font-size: 50px;
+}
+.MenuText {
+    margin:0px;
+    border:0px;
+    padding:14px;
+    text-align:center;
+    font-family: 'Fondamento';
+    background-image:url(resources/misc/menuBoard.png);
+    background-repeat:no-repeat;
+    background-position:center;
+}
+.sideBarText {
+    position:absolute;
+    margin:0px;
+    border:0px;
+    padding:0px;
+    text-align:left;
+    font-family: 'Fondamento';
+    z-index:4;
+}
+.lobbyText {
+    position:absolute;
+    margin:0px;
+    border:0px;
+    padding:0px;
+    text-align:center;
+    font-family: 'Fondamento';
+    font-size:14px;
+}
+.input {
+    height:50px;
+    width:100px;
+    border:0px;
+    text-align:center;
+    font-family: 'Fondamento';
+    background: rgb(00,00,00);
+    background: rgba(00,00,00,0);
+    background-image:url(resources/misc/menuBoard.png);
+    background-repeat:no-repeat;
+    background-position:center;
+}
+.char {
+    position:absolute;
+    margin:0px;
+    padding:0px;
+    border:0px;
+    display:inline-block;
+    vertical-align:bottom;
+    z-index:2;
+}
+.health {
+    position:absolute;
+    padding:0px;
+    margin:0px;
+    border:0px;
+    display:inline-block;
+    vertical-align:bottom;
+    z-index:4;
+}
+.tile {
+    position:relative;
+    margin:0px;
+    padding:0px;
+    border:0px;
+    display:inline-block;
+    vertical-align:bottom;
+    z-index:-1;
+}
+.tilehost {
+    position:absolute;
+    font-size: 0px;
+    width:100000px;
+}
+.enemy {
+    position:absolute;
+}
+#board {
+    background-image:url(resources/misc/simpledirt.png);
+    z-index:-2;
+    height:100%;
+    overflow:hidden;
+}
+#loadingScreen {
+    background-image:url(resources/misc/simpledirt.png);
+    z-index:998;
+    height:100%;
+    width:100%;
+    overflow:hidden;
+}
+#loadingText {
+    z-index:999;
+}
+#loadingBar {
+    background-color: #000000;
+    z-index:999;
+}
+#weapon {
+    position:absolute;
+    background-image:url(resources/misc/weapon_border.png);
+    background-repeat:no-repeat;
+    background-position:center;
+    z-index:4;
+}
+#coin {
+    position:absolute;
+    z-index:4;
+}
+#coinCount {
+    position:absolute;
+    z-index:4;
+}
+#sideBar {
+    position:absolute;
+    background-image:url(resources/misc/simplestone.png);
+    z-index:3;
+    left:790px;
+    top:0px;
+    width:1000px;
+    height:1000px;
+    overflow:hidden;
+}

@@ -1,0 +1,27 @@
+00 - Blank (required for blank spaces on tile space)
+---------- Floors
+01 - Dirt Floor
+02
+03
+04
+05
+06
+07
+08
+09
+---------- Walls
+10 - Dirt Wall
+11 - Wooden Wall
+12
+13
+14
+15
+16
+17
+18
+19
+---------- Decor
+20 - Open Ladder
+21 - Closed Ladder
+22 - Unpressed Button
+23 - Pressed Button
