@@ -236,6 +236,11 @@ function mainFunction() {
                             health--;
                             enemyNextPos = [enemies[i][1],enemies[i][2]];
                         }
+
+                        //checks if the enemy is colliding with another enemy
+                        else if (checkEnemyCollision(enemyNextPos[0],enemyNextPos[1]) != null) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
                         
                         //moves the enemy
                         else {
@@ -244,6 +249,72 @@ function mainFunction() {
                         }
                         enemies[i][4] = 2;
                     } // green slime's AI
+                    if (enemies[i][0] == 'goblin') {
+                        var enemyNextPos = [enemies[i][1],enemies[i][2]]
+                        
+                        //setting the finder type from pathfinder
+                        var finder = new PF.AStarFinder({
+                            allowDiagonal: false,
+                            dontCrossCorners: true
+                        });
+
+                        //recreating the map in gridMatrix as 0 for floors and 1 for walls
+                        var gridMatrix = []
+                        for (row in tiles) {
+                            gridMatrix.push([])
+                            for (tile in tiles[row]) {
+                                var newTile = (tiles[row][tile] <= 09 && tiles[row][tile] >= 01 ? 0 : 1)
+                                gridMatrix[row].push(newTile)
+                            }
+                        }
+                        
+                        var grid = new PF.Grid(gridMatrix);
+                        var path = finder.findPath(enemies[i][1], enemies[i][2], playerX+playerXOrigin, playerY+playerYOrigin, grid);
+                        enemyNextPos = path[1]
+
+                        //enforces a view distance
+                        if (path.length >= 12) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                            randInt = Math.floor(Math.random()*3.999);
+                            
+                            //picks a random direction
+                            if (randInt == 0) {
+                                enemyNextPos[0]++;
+                            }
+                            if (randInt == 1) {
+                                enemyNextPos[1]++;
+                            }
+                            if (randInt == 2) {
+                                enemyNextPos[0]--;
+                            }
+                            if (randInt == 3) {
+                                enemyNextPos[1]--;
+                            }
+                        }
+
+                        //checks if the enemy is colliding with a wall
+                        if (tiles[enemyNextPos[1]][enemyNextPos[0]] >= 10 && tiles[enemyNextPos[1]][enemyNextPos[0]] <= 19) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+                        
+                        //checks if the enemy is colliding with another enemy
+                        else if (checkEnemyCollision(enemyNextPos[0],enemyNextPos[1]) != null) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+
+                        //checks if the enemy is colliding with the player
+                        else if (enemyNextPos[0] == nextStep[0]+playerXOrigin && enemyNextPos[1] == nextStep[1]+playerYOrigin) {
+                            health -= 2;
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+                        
+                        //moves the enemy
+                        else {
+                            enemies[i][1] = enemyNextPos[0];
+                            enemies[i][2] = enemyNextPos[1];
+                        }
+                        enemies[i][4] = 2;
+                    }
                 } // enemy actions
             } // processes enemy turns
             
@@ -392,6 +463,7 @@ function mainFunction() {
             scene = 'tutorial';
         }//Tutorial
         if (playerX==-1&&playerY==0&&lobbyUnlocks[5]) {
+            alert("Loading may take a while. Please standby.");
             //places the player
             playerX=0;
             playerY=0;
@@ -434,6 +506,17 @@ function mainFunction() {
                 [11,01,01,11,11,01,11,11,01,01,11],
                 [11,01,01,01,11,01,11,01,01,01,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,11,11,11,11,01,11,11,11,11,11]],
+                [[11,11,11,11,11,01,11,11,11,11,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,11,11,11,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [01,01,11,01,01,01,01,01,11,01,01],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,11,11,11,01,01,01,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
                 [11,11,11,11,11,01,11,11,11,11,11]]]; // possible rooms
             var randInt = Math.floor(Math.random()*24);
@@ -483,6 +566,9 @@ function mainFunction() {
                         enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+2, 1, 2]);
                         enemies.push(["green_slime", (i%5)*11+2, Math.floor(i/5)*11+8, 1, 2]);
                         enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 2]);
+                    }
+                    else if (randInt2 == 3) {
+                        enemies.push(["goblin", (i%5)*11+5, Math.floor(i/5)*11+5, 1, 2]);
                     }
                 }              // creates other rooms
             } // floor creation
@@ -821,6 +907,14 @@ function resetBoard() {
 }
 function addToBoard(data) {
     board.innerHTML += String(data);
+}
+function checkEnemyCollision(x,y) {
+    for (enemy in enemies) {
+        if (x == enemies[enemy][1] && y == enemies[enemy][2]) {
+            return enemies[enemy]
+        }
+    }
+    return null
 }
 /*
 function startLoadingScreen() {
