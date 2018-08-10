@@ -7,3 +7,4 @@ FEATURES:
     -Progress to next levels
     -More rooms
     -A loading screen for levels.
+    -Add enemy attack animations

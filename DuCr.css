@@ -8,6 +8,8 @@
     font-size: 50px;
     color:#e5a912;
     text-shadow:4px 4px #161616;
+    z-index: 5;
+    position: relative;
 }
 .Subtitle {
     margin:20px;
@@ -49,6 +51,7 @@
     font-size:14px;
     color:#e5a912;
     text-shadow:2px 2px #161616;
+    z-index:2;
 }
 .input {
     height:50px;
@@ -96,6 +99,7 @@
 }
 .enemy {
     position:absolute;
+    z-index:2;
 }
 #board {
     background-image:url(resources/misc/simpledirt.png);
@@ -111,9 +115,11 @@
     overflow:hidden;
 }
 #loadingText {
+    position: relative;
     z-index:999;
 }
 #loadingBar {
+    position: relative;
     background-color: #000000;
     z-index:999;
 }
