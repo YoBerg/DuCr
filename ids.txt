@@ -3,7 +3,19 @@
 02 - Sword and Shield
 03 - Sword
 11 - Blood Sword
-99 - Sword of The Ancients
+99 - Ultimate Sword
+------------- Items
+00 - None
+01 - Healing Potion MK 1
+02 - Healing Potion MK 2
+03
+04
+05
+06
+07
+08
+09
+10
 ------------- Health
 1 - Full Heart
 2 - Half Heart

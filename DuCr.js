@@ -14,7 +14,7 @@ for (var i=1;i<100;i++) {
 var health = 6;
 var totalHealth = 6;
 var weapon = 'knife';
-var lobbyUnlocks = [true,true,false,false,false,true,false,false,false,false,false,false,false,false,false,false];
+var lobbyUnlocks = [true,true,false,true,false,true,false,false,false,false,false,false,false,false,false,false];
 var coins = 0;
 var damageValues = {'knife':1,'swordAndShield':2,'sword':3,'bloodSword':3,'ultimateSword':50};
 var enemies = [];//type, x, y, health, turntimer.
@@ -25,6 +25,8 @@ var attackPeriod = 0;
 var button = [];//x,y,state,event
 var ladderOpen = false;
 var runGame;
+var inventory = ["none","none","none","none","none","none","none","none","none","none",]
+var playerCooldownTimer = 0;
 
 //Creates and manages the login screen
 document.getElementById("MenuNew").addEventListener("click", function() {
@@ -85,7 +87,12 @@ document.getElementById("MenuContinue").addEventListener("click", function() {
         }
         totalHealth = Number(code.slice(28,30));
         coins = Number(code.slice(30,33));
-        playerName = code.slice(33,);
+        for (i=0;i<10;i++) {
+            currentSlice = code.slice(33+(2*i),35+(2*i));
+            if (currentSlice == '01') { inventory[i] = 'healing_potion_mk1' }
+            else if (currentSlice == '02') { inventory[i] = 'healing_potion_mk2' }
+        }
+        playerName = code.slice(53,);
         loadGame();
     });
 });
@@ -108,6 +115,7 @@ function mainFunction() {
     
     //calculating health
     if (health > 0) {
+        health = (health>totalHealth) ? totalHealth : health; //if health is higher than total health, health is set to total health
         var emptyHealth = totalHealth - health;
         var healthAccount = health;
         var heartIndex = 0;
@@ -167,30 +175,41 @@ function mainFunction() {
         keys[38]=2;
         char.src = 'resources/char/char0.1.png';
         playerMoved = true;
-    }
-    else if (keys[39]==1) {
+    } else if (keys[39]==1) {
         nextStep = [playerX+1,playerY];
         keys[39]=2;
         char.src = 'resources/char/char0.2.png';
         playerMoved = true;
-    }
-    else if (keys[40]==1) {
+    } else if (keys[40]==1) {
         nextStep = [playerX,playerY+1];
         keys[40]=2;
         char.src = 'resources/char/char0.3.png';
         playerMoved = true;
-    }
-    else if (keys[37]==1) {
+    } else if (keys[37]==1) {
         nextStep = [playerX-1,playerY];
         keys[37]=2;
         char.src = 'resources/char/char0.4.png';
         playerMoved = true;
+    }
+    for (var n = 48; n <= 57; n++) {
+        if (keys[n]==1 && playerCooldownTimer < 1) {
+            keys[n] = 2;
+            useItem(n-48);
+        }
     }
     //cancels movement if player is moving into a wall.
     if (tiles[nextStep[1]+playerYOrigin][nextStep[0]+playerXOrigin]>=10&&tiles[nextStep[1]+playerYOrigin][nextStep[0]+playerXOrigin]<=19) {
         nextStep = [playerX,playerY];
         playerMoved = false;
     }
+
+    if (playerCooldownTimer > 0) {
+        nextStep = [playerX,playerY];
+        playerMoved = true;
+        playerCooldownTimer--;
+        sleep(500);
+    }
+
     var textLoc = document.querySelectorAll(".lobbyText");
     
     if (nextStep!=[playerX,playerY]) {
@@ -1006,6 +1025,16 @@ function sideBarSetUp() {
     addToBoard("<h1 class='sideBarText' id='coinCount'></h1>"); //creates the coin count label and positions it
     document.getElementById("coinCount").style.top = '240px';
     document.getElementById("coinCount").style.left = '850px';
+
+    addToBoard("<h1 class='sideBarText' id='inventorySign'>Inventory:</h1>")
+    document.getElementById("inventorySign").style.top = '318px';
+    document.getElementById("inventorySign").style.left = '800px';
+
+    for (n in inventory) {
+        addToBoard("<img id='inventoryItem"+String(n) + "' width=64px height=64px class='inventoryItem' src='resources/inventoryItems/" + inventory[n] + ".gif'>")
+        document.getElementById("inventoryItem"+String(n)).style.top = String(366 + (n <= 4 ? 0 : 78)) + 'px';
+        document.getElementById("inventoryItem"+String(n)).style.left = String(800 + (n%5)*78) + 'px';
+    }
     
     addToBoard("<p1 class='sideBarText' id='savedCode'>Go to 'Save' in the lobby to get your code here.</p1>"); //creates the save code label and positions it
     document.getElementById("savedCode").style.top = '650px';
@@ -1075,7 +1104,13 @@ function giveSaveCode() {
     else {
         saveCode += String(coins);
     }
-    
+
+    //creates the next 20 characters based on the player's inventory.
+    for (item in inventory) {
+        if (inventory[item] == 'healing_potion_mk1') { saveCode += "01" }
+        else if (inventory[item] == 'healing_potion_mk2') { saveCode += "02" }
+        else { saveCode += "00" }
+    }
     saveCode += playerName; //adds the player name to the end of the code.
     document.getElementById("savedCode").innerHTML = saveCode; //sets the save code label to the save code.
 }
@@ -1118,6 +1153,26 @@ function checkEnemyCollision(x,y) {
         }
     }
     return null
+}
+function useItem(index) {
+    index = index == 0 ? 9 : index-=1;
+    const item = inventory[index]
+    if (item == "healing_potion_mk1") {
+        health++;
+        playerCooldownTimer = 1
+    }
+    else if (item == "healing_potion_mk2") {
+        health += 2;
+        playerCooldownTimer = 2
+    }
+    inventory[index] = "none";
+    document.getElementById("inventoryItem"+String(index)).src = "resources/inventoryItems/none.gif"
+}
+function sleep(milliseconds) {
+    var currentTime = new Date().getTime();
+ 
+    while (currentTime + milliseconds >= new Date().getTime()) {
+    }
 }
 /*
 function startLoadingScreen() {

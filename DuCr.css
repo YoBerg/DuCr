@@ -101,6 +101,16 @@
     position:absolute;
     z-index:2;
 }
+.inventoryItem {
+    position: absolute;
+    background-image:url(resources/misc/weapon_border.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 4;
+    border: 10px;
+    border-color:black;
+    border-width:10px;
+}
 #board {
     background-image:url(resources/misc/simpledirt.png);
     z-index:-2;
