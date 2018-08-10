@@ -387,15 +387,20 @@ function mainFunction() {
     for (var i=0;i<textLoc.length;i++) {
         textLoc[i].style.left = String(Number(textLoc[i].style.left.slice(0,textLoc[i].style.left.length-2))-((nextStep[0]-playerX)*48))+'px';
         textLoc[i].style.top = String(Number(textLoc[i].style.top.slice(0,textLoc[i].style.top.length-2))-((nextStep[1]-playerY)*48))+'px';
-    } // moving the locations of the tiles to adjust to the player's old location
+    } // moving the locations of the text to adjust to the player's old location
     
     //updating the player's new location
     playerX = nextStep[0];
     playerY = nextStep[1];
     
     for (var i=0;i<tileLoc.length;i++) {
-        tileLoc[i].style.left = String(-(playerX*48))+'px';
-        tileLoc[i].style.top = String(-(playerY*48))+'px';
+        if (tileLoc[i].id == 'button') {
+            tileLoc[i].style.left = String(-(playerX*48)+(button[0]*48))+'px';
+            tileLoc[i].style.top = String(-(playerY*48)+(button[1]*48))+'px';
+        } else {
+            tileLoc[i].style.left = String(-(playerX*48))+'px';
+            tileLoc[i].style.top = String(-(playerY*48))+'px';
+        }
     } // moving the locations of the tiles to adjust to the player's new location
     
     if (weapon=='ultimateSword') {
@@ -423,6 +428,7 @@ function mainFunction() {
             //resetting the player's location
             playerX = 0;
             playerY = 0;
+            button = [1,12,'up','openLadder'];
             
             //creates the tutorial room
             document.getElementById("tilehost").innerHTML = "";
@@ -439,7 +445,7 @@ function mainFunction() {
             tiles.push([11,01,01,01,01,01,01,01,11]);
             tiles.push([11,01,01,01,01,01,01,01,11]);
             tiles.push([11,01,01,01,01,01,01,01,11]);
-            tiles.push([11,22,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,11]);
             tiles.push([11,01,01,01,01,01,01,01,11]);
             tiles.push([11,01,01,01,01,01,01,01,11]);
             tiles.push([11,01,01,01,01,01,01,01,11]);
@@ -464,7 +470,6 @@ function mainFunction() {
             
             renderEntities();
             lobbyUnlocks[1] = false;
-            button = [1,12,'up','openLadder'];
             ladderOpen = false;
             scene = 'tutorial';
         }//Tutorial
@@ -539,7 +544,7 @@ function mainFunction() {
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
-                    [01,01,01,01,01,22,01,01,01,01,01],
+                    [01,01,01,01,01,01,01,01,01,01,01],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
@@ -606,10 +611,7 @@ function mainFunction() {
                 tiles[i][0] = 11;
                 tiles[i][54] = 11;
             }
-            
-            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
-            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
-            
+
             // activates the button
             button = [0,0,'up','openLadder'];
             while (randInt>4) {
@@ -622,6 +624,10 @@ function mainFunction() {
             }
             button[0]+=5;
             button[1]+=5;
+            
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            
             ladderOpen = false;
             
             scene = 'Zone 1 - 1';
@@ -633,6 +639,7 @@ function mainFunction() {
             scene = 'lobby';
             
             // creates the lobby room
+            button = []
             document.getElementById("tilehost").innerHTML = "";
             tiles = [];
             tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
@@ -664,12 +671,7 @@ function mainFunction() {
             playerY=0;
             
             // clears entities
-            for (var i=0;i<items.length;i++) {
-                document.getElementById('item'+String(i)).remove();
-            }
-            for (var i=0;i<enemies.length;i++) {
-                document.getElementById('enemy'+String(i)).remove();
-            }
+            $(".enemy").remove();
             items=[];
             enemies=[];
             
@@ -763,7 +765,7 @@ function mainFunction() {
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
-                    [01,01,01,01,01,22,01,01,01,01,01],
+                    [01,01,01,01,01,01,01,01,01,01,01],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
@@ -850,9 +852,6 @@ function mainFunction() {
                 tiles[i][54] = 11;
             }
             
-            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
-            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
-            
             // activates the button
             button = [0,0,'up','openLadder'];
             while (randInt>4) {
@@ -865,6 +864,10 @@ function mainFunction() {
             }
             button[0]+=5;
             button[1]+=5;
+
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            
             ladderOpen = false;
             renderEntities();
         }
@@ -955,15 +958,13 @@ function loadScreen() {
             else if (tiles[i][i2]==21) {
                 newScreen += "ladder_closed.png' id='ladder";
             }
-            else if (tiles[i][i2]==22) {
-                newScreen += "button_up.png' id='button";
-            }
-            else if (tiles[i][i2]==23) {
-                newScreen += "button_down.png' id='button";
-            }
             newScreen += "'>";
         }
         newScreen += '<br>';
+    }
+    if (button.length > 0) {
+        newScreen += "<img width=48 height=48 class='tile' src='resources/tiles/button_" + 
+        button[2] + ".png' id='button' style='z-index:0;position:absolute;'><br>";
     }
     return newScreen;
 }
