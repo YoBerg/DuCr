@@ -17,6 +17,7 @@ var weapon = 'knife';
 var lobbyUnlocks = [true,true,false,true,false,true,false,false,false,false,false,false,false,false,false,false];
 var coins = 0;
 var damageValues = {'knife':1,'swordAndShield':2,'sword':3,'bloodSword':3,'ultimateSword':50};
+var blockChance = {'swordAndShield':33,'ultimateSword':50}
 var enemies = [];//type, x, y, health, turntimer.
 var items = []; //type, x, y
 var playerMoved = false;
@@ -86,13 +87,13 @@ document.getElementById("MenuContinue").addEventListener("click", function() {
             }
         }
         totalHealth = Number(code.slice(28,30));
-        coins = Number(code.slice(30,33));
+        coins = Number(code.slice(30,36));
         for (i=0;i<10;i++) {
-            currentSlice = code.slice(33+(2*i),35+(2*i));
+            currentSlice = code.slice(36+(2*i),38+(2*i));
             if (currentSlice == '01') { inventory[i] = 'healing_potion_mk1' }
             else if (currentSlice == '02') { inventory[i] = 'healing_potion_mk2' }
         }
-        playerName = code.slice(53,);
+        playerName = code.slice(56,);
         loadGame();
     });
 });
@@ -112,6 +113,7 @@ function mainFunction() {
     document.getElementById("tilehost").style.left = String(8+(6-playerXOrigin)*48)+'px';
     document.getElementById("tilehost").style.top = String(8+(6-playerYOrigin)*48)+'px';
     document.getElementById("damageStat").innerHTML = "Damage: "+String(damageValues[weapon]);
+    document.getElementById("weapon").src = "resources/weapons/" + weapon + ".gif";
     
     //calculating health
     if (health > 0) {
@@ -156,6 +158,8 @@ function mainFunction() {
             document.getElementById("health"+String(heartIndex)).src = "resources/misc/heart_empty.png";
         }
     }
+
+    if (coins>=1000000) { coins = 999999 }
     //setup complete -----------------------
     
     onkeyup = onkeydown = function(e){
@@ -252,7 +256,10 @@ function mainFunction() {
                         
                         //checks if the enemy is colliding with the player
                         else if (enemyNextPos[0] == nextStep[0]+playerXOrigin && enemyNextPos[1] == nextStep[1]+playerYOrigin) {
-                            health--;
+                            randInt = Math.floor(Math.random()*99.99999) + 1;
+                            if (randInt >= (blockChance[weapon] != undefined ? blockChance[weapon] : 0)) {
+                                health--;
+                            }
                             enemyNextPos = [enemies[i][1],enemies[i][2]];
                         }
 
@@ -323,7 +330,10 @@ function mainFunction() {
 
                         //checks if the enemy is colliding with the player
                         else if (enemyNextPos[0] == nextStep[0]+playerXOrigin && enemyNextPos[1] == nextStep[1]+playerYOrigin) {
-                            health -= 2;
+                            randInt = Math.floor(Math.random()*99.99999) + 1;
+                            if (randInt >= (blockChance[weapon] != undefined ? blockChance[weapon] : 0)) {
+                                health -= 2;
+                            }
                             enemyNextPos = [enemies[i][1],enemies[i][2]];
                         }
                         
@@ -401,7 +411,7 @@ function mainFunction() {
             currentEnemy.style.top = String(296+(enemies[i][2]-(playerY+playerYOrigin))*48)+'px';
             currentEnemy.style.left = String(296+(enemies[i][1]-(playerX+playerXOrigin))*48)+'px';
         }
-    } // handles enemy movement
+    } // handles enemy rendering
     
     for (var i=0;i<textLoc.length;i++) {
         textLoc[i].style.left = String(Number(textLoc[i].style.left.slice(0,textLoc[i].style.left.length-2))-((nextStep[0]-playerX)*48))+'px';
@@ -492,6 +502,31 @@ function mainFunction() {
             ladderOpen = false;
             scene = 'tutorial';
         }//Tutorial
+        if (playerX==3&&playerY==-2&&lobbyUnlocks[3]) {
+            playerX = 0;
+            playerY = 0;
+            playerXOrigin = 6;
+            playerYOrigin = 2;
+
+            document.getElementById("tilehost").innerHTML = "";
+            tiles = [];
+            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
+            tiles.push([11,01,01,01,01,01,20,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
+            document.getElementById("tilehost").innerHTML = loadScreen();
+
+            document.getElementById("lobbyTextHost").innerHTML = "";
+
+            if (lobbyUnlocks[5]) {
+                document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='left:156px;top:312px;width:48px;' id='swordText'>Sword<br>20C</p>";
+                document.getElementById("lobbyTextHost").innerHTML += "<img class='lobbyText' style='left:144px;top:336px;width:64px;height:64px;z-index:1;' id='swordImage' src='resources/weapons/sword.gif'>";
+            }
+
+            scene = 'shop';
+        }//Shop
         if (playerX==-1&&playerY==0&&lobbyUnlocks[5]) {
             alert("Loading may take a while... Please press 'enter' and standby.")
             //places the player
@@ -655,45 +690,7 @@ function mainFunction() {
     }
     else if (scene=='tutorial') {
         if (ladderOpen==true&&playerX==0&&playerY==15) {
-            scene = 'lobby';
-            
-            // creates the lobby room
-            button = []
-            document.getElementById("tilehost").innerHTML = "";
-            tiles = [];
-            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
-            for (var i=0;i<12;i++) {
-                tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
-            }
-            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
-            for (var i=4;i<=10;i+=2) {
-                for (var i2=3;i2<=9;i2+=2) {
-                    if (lobbyUnlocks[((i2-3)/2)+((i-4)*2)]==true) {
-                        tiles[i][i2] = 20;
-                    }
-                    else {
-                        tiles[i][i2] = 21;
-                    }
-                }
-            }
-            
-            // loads the screen and the text
-            document.getElementById("tilehost").innerHTML = loadScreen();
-            document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
-            document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
-            document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
-            
-            // places the player
-            playerXOrigin=6;
-            playerYOrigin=6;
-            playerX=0;
-            playerY=0;
-            
-            // clears entities
-            $(".enemy").remove();
-            items=[];
-            enemies=[];
-            
+            returnToLobby();
         } // returns player to the lobby
     } //Back to lobby
     else if (scene=='Zone 1 - 1') {
@@ -891,6 +888,13 @@ function mainFunction() {
             renderEntities();
         }
     } //Zone 1 - 2
+    else if (scene=='shop') {
+        if (playerX==0&&playerY==-1) {
+            returnToLobby();
+        } else if (playerX==-3&&playerY==1&&lobbyUnlocks[5]) {
+            purchase('sword', 'weapon', 20);
+        }
+    } //Back to lobby
     
     //cleanup ------------------------------
     playerMoved = false;
@@ -949,6 +953,8 @@ function loadGame() {
     preloadImage('resources/misc/heart_empty.png');
     preloadImage('resources/misc/heart_half.png');
     preloadImage('resources/misc/heart_full.png');
+    preloadImage('resources/inventoryItems/healing_potion_mk1.gif');
+    preloadImage('resources/inventoryItems/healing_potion_mk2.gif');
     sideBarSetUp();
     addToBoard("<div id='lobbyTextHost'></div>");
     
@@ -956,6 +962,7 @@ function loadGame() {
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
+    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
 }
 function loadScreen() {
     var newScreen = '';
@@ -1095,10 +1102,16 @@ function giveSaveCode() {
     }
     
     //creates the next 3 characters based on the player's coin count.
-    if (coins<10) {
+    if (coins<=10) {
+        saveCode += '0000'+String(coins);
+    }
+    else if (coins<=100) {
+        saveCode += '000'+String(coins);
+    }
+    else if (coins<=1000) {
         saveCode += '00'+String(coins);
     }
-    else if (coins<100) {
+    else if (coins<=10000) {
         saveCode += '0'+String(coins);
     }
     else {
@@ -1172,6 +1185,61 @@ function sleep(milliseconds) {
     var currentTime = new Date().getTime();
  
     while (currentTime + milliseconds >= new Date().getTime()) {
+    }
+}
+function returnToLobby() {
+    scene = 'lobby';
+            
+    // creates the lobby room
+    button = []
+    document.getElementById("tilehost").innerHTML = "";
+    tiles = [];
+    tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
+    for (var i=0;i<12;i++) {
+        tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+    }
+    tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
+    for (var i=4;i<=10;i+=2) {
+        for (var i2=3;i2<=9;i2+=2) {
+            if (lobbyUnlocks[((i2-3)/2)+((i-4)*2)]==true) {
+                tiles[i][i2] = 20;
+            }
+            else {
+                tiles[i][i2] = 21;
+            }
+        }
+    }
+    
+    // loads the screen and the text
+    document.getElementById("tilehost").innerHTML = loadScreen();
+    document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
+    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
+    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
+    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
+    
+    // places the player
+    playerXOrigin=6;
+    playerYOrigin=6;
+    playerX=0;
+    playerY=0;
+    
+    // clears entities
+    $(".enemy").remove();
+    items=[];
+    enemies=[];
+}
+function purchase(item, type, cost) {
+    if (type == 'weapon') {
+        if (weapon != item && coins >= cost && document.getElementById('swordText') != null) {
+            weapon = item;
+            coins -= cost;
+            document.getElementById(item+'Text').remove();
+            document.getElementById(item+'Image').remove();
+        }
+    } else if (type == 'item') {
+        if (!(inventory.includes('none'))) {
+            // buy as item
+        }
     }
 }
 /*
