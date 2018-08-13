@@ -28,6 +28,8 @@ var ladderOpen = false;
 var runGame;
 var inventory = ["none","none","none","none","none","none","none","none","none","none",]
 var playerCooldownTimer = 0;
+var bossSpecials = {'boss_goblin_king':0};
+var originalHealth = 0; // For Boss Health Bar
 
 //Creates and manages the login screen
 document.getElementById("MenuNew").addEventListener("click", function() {
@@ -157,6 +159,8 @@ function mainFunction() {
             heartIndex++;
             document.getElementById("health"+String(heartIndex)).src = "resources/misc/heart_empty.png";
         }
+        clearInterval(runGame);
+        return
     }
 
     if (coins>=1000000) { coins = 999999 }
@@ -221,16 +225,19 @@ function mainFunction() {
             var currentEnemy = document.getElementById('enemy'+String(i));
             if (nextStep[0]+playerXOrigin==enemies[i][1]&&nextStep[1]+playerYOrigin==enemies[i][2]) {
                 enemies[i][3]-=damageValues[weapon];
-                char.style.left = String(296+48*(nextStep[0]-playerX))+'px';
-                char.style.top = String(300+48*(nextStep[1]-playerY))+'px';
+                char.style.left = String(300+48*(nextStep[0]-playerX))+'px';
+                char.style.top = String(296+48*(nextStep[1]-playerY))+'px';
                 nextStep=[playerX,playerY];
                 attackPeriod = 10;
                 playerAttacked = true;
+                if (enemies[i][0] == 'boss_goblin_king') {
+                    updateHealthBar(i, enemies[i][3] <= 50 ? 50 : enemies[i][3]);
+                }
             } // damages enemies via basic attack
             
             if (enemies[i][3] > 0 && playerMoved == true) {
                 enemies[i][4]--;
-                if (enemies[i][4] == 0) {
+                if (enemies[i][4] <= 0) {
                     if (enemies[i][0] == 'green_slime') {
                         var enemyNextPos = [enemies[i][1],enemies[i][2]];
                         randInt = Math.floor(Math.random()*3.999);
@@ -275,7 +282,7 @@ function mainFunction() {
                         }
                         enemies[i][4] = 2;
                     } // green slime's AI
-                    if (enemies[i][0] == 'goblin' || enemies[i][0] == 'armored_goblin') {
+                    else if (enemies[i][0] == 'goblin' || enemies[i][0] == 'armored_goblin') {
                         var enemyNextPos = [enemies[i][1],enemies[i][2]]
                         
                         //setting the finder type from pathfinder
@@ -344,6 +351,152 @@ function mainFunction() {
                         }
                         enemies[i][4] = 2;
                     }
+                    else if (enemies[i][0] == 'boss_goblin_king') {
+                        var enemyNextPos = [enemies[i][1],enemies[i][2]]
+                        bossSpecials['boss_goblin_king']--;
+                        
+                        //boss' special attacks
+                        if (bossSpecials['boss_goblin_king'] <= 0) {
+                            bossSpecials['boss_goblin_king'] = 2;
+                            randInt = Math.floor(Math.random()*3.999999);
+                            if (randInt == 0) {
+                                var enemyAtSpawn = false;
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 2 && enemies[enemy][2] == 4) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['armored_goblin',2,4,3,2]);
+                                }
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 10 && enemies[enemy][2] == 4) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['armored_goblin',10,4,3,2]);
+                                }
+                                renderEntities();
+                            } else if (randInt == 1) {
+                                var enemyAtSpawn = false;
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 2 && enemies[enemy][2] == 10) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',2,4,1,1])
+                                }
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 10 && enemies[enemy][2] == 10) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',10,4,1,1]);
+                                }
+                                enemyAtSpawn = false;
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 2 && enemies[enemy][2] == 13) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',2,4,1,1]);
+                                }
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 10 && enemies[enemy][2] == 13) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',10,4,1,1]);
+                                }
+                                enemyAtSpawn = false;
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 2 && enemies[enemy][2] == 16) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',2,4,1,1]);
+                                }
+                                for (enemy in enemies) {
+                                    if (enemies[enemy][1] == 10 && enemies[enemy][2] == 16) {
+                                        enemyAtSpawn = true;
+                                    }
+                                }
+                                if (!enemyAtSpawn) {
+                                    enemies.push(['goblin',10,4,1,1]);
+                                }
+                                renderEntities();
+                            } else if (randInt == 2) {
+                                for (enemy in enemies) {
+                                    enemies[enemy][3]+=0.2;
+                                    enemies[enemy][4]--;
+                                }
+                                updateHealthBar(i, enemies[i][3] <= 50 ? 50 : enemies[i][3]);
+                                document.getElementById('statusNotifier').innerHTML = 'Enemies have healed!';
+                                document.getElementById('statusNotifier').style.opacity = 2;
+                            } else if (randInt == 3) {
+                                playerCooldownTimer = 1;
+                                document.getElementById('statusNotifier').innerHTML = 'You have lost a turn!';
+                                document.getElementById('statusNotifier').style.opacity = 2;
+                            }
+                        }
+                        //setting the finder type from pathfinder
+                        var finder = new PF.AStarFinder({
+                            allowDiagonal: false,
+                            dontCrossCorners: true
+                        });
+
+                        //recreating the map in gridMatrix as 0 for floors and 1 for walls
+                        var gridMatrix = []
+                        for (row in tiles) {
+                            gridMatrix.push([])
+                            for (tile in tiles[row]) {
+                                var newTile = (tiles[row][tile] <= 19 && tiles[row][tile] >= 10 ? 1 : 0)
+                                gridMatrix[row].push(newTile)
+                            }
+                        }
+                        
+                        var grid = new PF.Grid(gridMatrix);
+                        var path = finder.findPath(enemies[i][1], enemies[i][2], playerX+playerXOrigin, playerY+playerYOrigin, grid);
+                        enemyNextPos = path[1]
+
+                        //checks if the enemy is colliding with a wall
+                        if (tiles[enemyNextPos[1]][enemyNextPos[0]] >= 10 && tiles[enemyNextPos[1]][enemyNextPos[0]] <= 19) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+                        
+                        //checks if the enemy is colliding with another enemy
+                        else if (checkEnemyCollision(enemyNextPos[0],enemyNextPos[1]) != null) {
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+
+                        //checks if the enemy is colliding with the player
+                        else if (path.length == 3) {
+                            randInt = Math.floor(Math.random()*99.99999) + 1;
+                            if (randInt >= (blockChance[weapon] != undefined ? blockChance[weapon] : 0)) {
+                                health -= 1;
+                            }
+                        }
+                        else if (path.length == 2) {
+                            randInt = Math.floor(Math.random()*99.99999) + 1;
+                            if (randInt >= (blockChance[weapon] != undefined ? Math.floor(blockChance[weapon]/2) : 0)) {
+                                health -= 2;
+                            }
+                            enemyNextPos = [enemies[i][1],enemies[i][2]];
+                        }
+                        
+                        //moves the enemy
+                        else {
+                            enemies[i][1] = enemyNextPos[0];
+                            enemies[i][2] = enemyNextPos[1];
+                        }
+                        enemies[i][4] = 7;
+                    }
                 } // enemy actions
             } // processes enemy turns
             
@@ -360,6 +513,12 @@ function mainFunction() {
                 } else if (randInt >= 1 && randInt <= 250 && enemies[i][0] == 'armored_goblin') {
                     addItem("coin",enemies[i][1],enemies[i][2]);
                     currentEnemy = document.getElementById('enemy'+String(i));
+                } else if (enemies[i][0] == 'boss_goblin_king') {
+                    addItem("coin_pouch",enemies[i][1],enemies[i][2]);
+                    currentEnemy = document.getElementById('enemy'+String(i));
+                    ladderOpen = true;
+                    buttonEvent('openLadder');
+                    removeHealthBar();
                 }
                 
                 enemies.splice(i,1);
@@ -399,20 +558,41 @@ function mainFunction() {
                     } // reorders enemy list (prevents 'gaps' that crashes the game)
                     i--;
                 }
+                else if (items[i][0]=='coin_pouch') {
+                    coins+=10;
+                    items.splice(i,1);
+                    currentItem.remove();
+                    i2 = 1;
+                    while (true) {
+                        if (document.getElementById('item'+String(i+i2)) != null) {
+                            document.getElementById('item'+String(i+i2)).id = 'item'+String(i+i2-1);
+                            i2++;
+                        }
+                        else {
+                            break;
+                        }
+                    } // reorders enemy list (prevents 'gaps' that crashes the game)
+                    i--;
+                }
             } //handles item pickups
         } //handles item interactions
         
         if (nextStep[0]+playerXOrigin==button[0]&&nextStep[1]+playerYOrigin==button[1]&&button[2]=='up') {
             document.getElementById('button').src = "resources/tiles/button_down.png";
             button[2]='down';
-            buttonEvent();
+            buttonEvent(button[3]);
         } //handles button interactions
     } // interaction handler
     if (playerAttacked == false) {
         for (var i=0;i<enemies.length;i++) {
             currentEnemy = document.getElementById('enemy'+String(i));
-            currentEnemy.style.top = String(296+(enemies[i][2]-(playerY+playerYOrigin))*48)+'px';
-            currentEnemy.style.left = String(296+(enemies[i][1]-(playerX+playerXOrigin))*48)+'px';
+            if (enemies[i][0] == 'boss_goblin_king') {
+                currentEnemy.style.top = String(272+(enemies[i][2]-(playerY+playerYOrigin))*48)+'px';
+                currentEnemy.style.left = String(272+(enemies[i][1]-(playerX+playerXOrigin))*48)+'px';
+            } else {
+                currentEnemy.style.top = String(296+(enemies[i][2]-(playerY+playerYOrigin))*48)+'px';
+                currentEnemy.style.left = String(296+(enemies[i][1]-(playerX+playerXOrigin))*48)+'px';
+            }
         }
     } // handles enemy rendering
     
@@ -1112,44 +1292,63 @@ function mainFunction() {
             //places the player
             playerX=0;
             playerY=0;
-            playerXOrigin=27;
-            playerYOrigin=27;
+            playerXOrigin=6;
+            playerYOrigin=29;
             rooms = [];
             enemies = [];
             items = [];
+            button = [];
             scene = 'Zone 1 - BOSS';
             $(".enemy").remove();
             changeTabTitle('DuCr : Zone 1 - BOSS')
+            bossSpecials['boss_goblin_king'] = 3;
             
             preloadImage("resources/enemies/green_slime.gif");
             preloadImage("resources/enemies/goblin.gif");
             preloadImage("resources/enemies/armored_goblin.gif");
-            preloadImage("resources/enemies/boss_king_goblin.gif")
+            preloadImage("resources/enemies/boss_goblin_king.gif")
             
             //generates the rooms
             document.getElementById("tilehost").innerHTML = "";
             
             tiles = [];
             tiles.push([00,00,00,00,11,11,11,11,11,00,00,00,00]);
-            tiles.push([00,00,00,00,11,00,00,00,11,00,00,00,00]);
-            tiles.push([11,11,11,11,11,00,00,00,11,11,11,11,11]);
-            tiles.push([11,00,00,00,00,00,00,00,00,00,00,00,11]);
-
-            // activates the button
-            button = [0,0,'up','openLadder'];
-            while (randInt>4) {
-                button[1]+=11;
-                randInt-=5;
-            }
-            while (randInt>0) {
-                button[0]+=11;
-                randInt-=1;
-            }
-            button[0]+=5;
-            button[1]+=5;
+            tiles.push([00,00,00,00,11,01,21,01,11,00,00,00,00]);
+            tiles.push([11,11,11,11,11,01,01,01,11,11,11,11,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,10,01,01,01,01,01,10,01,01,11]);
+            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
+            tiles.push([11,01,01,11,01,01,01,01,01,11,01,01,11]);
+            tiles.push([11,11,11,11,01,01,01,01,01,11,11,11,11]);
+            tiles.push([00,00,00,11,01,01,01,01,01,11,00,00,00]);
+            tiles.push([00,00,00,11,01,01,01,01,01,11,00,00,00]);
+            tiles.push([00,00,00,11,01,01,01,01,01,11,00,00,00]);
+            tiles.push([00,00,00,11,01,01,01,01,01,11,00,00,00]);
+            tiles.push([00,00,00,11,11,11,11,11,11,11,00,00,00]);
 
             document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
             document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            enemies.push(['boss_goblin_king',6,5,50,11]);
+            createBossHealthBar(enemies.length-1,50);
             
             ladderOpen = false;
             renderEntities();
@@ -1166,6 +1365,9 @@ function mainFunction() {
     //cleanup ------------------------------
     playerMoved = false;
     playerAttacked = false;
+    if (document.getElementById('statusNotifier') != undefined) {
+        document.getElementById('statusNotifier').style.opacity -= 0.015;
+    }
 }
 function loadGame() {
     
@@ -1230,6 +1432,7 @@ function loadGame() {
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
     document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
+    addToBoard("<h2 id='statusNotifier'></h2>")
 }
 function loadScreen() {
     var newScreen = '';
@@ -1241,6 +1444,9 @@ function loadScreen() {
             }
             else if (tiles[i][i2]==01) {
                 newScreen += "dirtFloor.png";
+            }
+            else if (tiles[i][i2]==10) {
+                newScreen += "dirtPit.png";
             }
             else if (tiles[i][i2]==11) {
                 newScreen += "woodenWall.png";
@@ -1395,9 +1601,10 @@ function giveSaveCode() {
     document.getElementById("savedCode").innerHTML = saveCode; //sets the save code label to the save code.
 }
 function renderEntities() {
+    $(".enemy").remove();
     for (var i=0;i<enemies.length;i++) {
-        if (enemies[i][0].slice(0,4) == 'boss') {
-            addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(292-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(288-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
+        if (enemies[i][0] == 'boss_goblin_king') {
+            addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(274-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(270-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
         } else {
             addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(300-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(296-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
         }
@@ -1418,8 +1625,8 @@ function addItem(type, x, y) {
         i3++;
     }
 } // add item mid-session (create and render)
-function buttonEvent() {
-    if (button[3]=='openLadder') {
+function buttonEvent(event) {
+    if (event=='openLadder') {
         document.getElementById('ladder').src = 'resources/tiles/ladder_open.png';
         ladderOpen = true;
     }
@@ -1516,6 +1723,22 @@ function purchase(item, type, cost) {
 }
 function changeTabTitle(newTitle) {
     document.getElementById('tabTitle').innerHTML = newTitle
+}
+function createBossHealthBar (enemy, totalHealth) {
+    if (totalHealth === undefined) {
+        totalHealth = enemies[enemy][3];
+    }
+    addToBoard("<div id='healthBarBorder'></div>");
+    addToBoard("<div id='healthBar'></div>")
+    addToBoard("<img id='healthBarIcon' src='resources/bossIcons/" + String(enemies[enemy][0]) + ".gif'>");
+}
+function updateHealthBar(enemy, totalHealth) {
+    document.getElementById('healthBar').style.width = String(560*(enemies[enemy][3]/totalHealth))+'px';
+}
+function removeHealthBar() {
+    document.getElementById('healthBarBorder').remove();
+    document.getElementById('healthBar').remove();
+    document.getElementById('healthBarIcon').remove();
 }
 /*
 function startLoadingScreen() {

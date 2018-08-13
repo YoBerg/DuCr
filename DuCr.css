@@ -158,3 +158,40 @@
     height:1000px;
     overflow:hidden;
 }
+#healthBarIcon {
+    position: absolute;
+    left:100px;
+    top:72px;
+    width:40px;
+    height:40px;
+    z-index:4;
+}
+#healthBarBorder {
+    position: absolute;
+    border-width: 1px;
+    border-color: #161616;
+    left:140px;
+    top:72px;
+    width:560px;
+    height:40px;
+    z-index:4;
+}
+#healthBar {
+    position: absolute;
+    background-color: rgb(182,17,24);
+    left:140px;
+    top:72px;
+    width:560px;
+    height:40px;
+    z-index:3;
+}
+#statusNotifier {
+    position: absolute;
+    left:400px;
+    top:300px;
+    z-index:4;
+    text-align:center;
+    color: #e5a912;
+    opacity:1;
+    text-shadow:3px 3px #161616;
+}

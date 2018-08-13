@@ -10,7 +10,7 @@
 08
 09
 ---------- Walls
-10 - Dirt Wall
+10 - Dirt Pit
 11 - Wooden Wall
 12
 13
