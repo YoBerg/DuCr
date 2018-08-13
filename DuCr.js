@@ -16,7 +16,7 @@ var totalHealth = 6;
 var weapon = 'knife';
 var lobbyUnlocks = [true,true,false,true,false,true,false,false,false,false,false,false,false,false,false,false];
 var coins = 0;
-var damageValues = {'knife':1,'swordAndShield':2,'sword':3,'bloodSword':3,'ultimateSword':50};
+var damageValues = {'knife':1,'swordAndShield':2,'sword':2,'bloodSword':2,'ultimateSword':50};
 var blockChance = {'swordAndShield':33,'ultimateSword':50}
 var enemies = [];//type, x, y, health, turntimer.
 var items = []; //type, x, y
@@ -275,7 +275,7 @@ function mainFunction() {
                         }
                         enemies[i][4] = 2;
                     } // green slime's AI
-                    if (enemies[i][0] == 'goblin') {
+                    if (enemies[i][0] == 'goblin' || enemies[i][0] == 'armored_goblin') {
                         var enemyNextPos = [enemies[i][1],enemies[i][2]]
                         
                         //setting the finder type from pathfinder
@@ -349,12 +349,15 @@ function mainFunction() {
             
             if (enemies[i][3] <= 0) {
 
-                // generates enemy drops
+                // generates enemy drops and determines enemy to delete
                 var randInt = Math.floor(Math.random()*999.999);
                 if (randInt >= 1 && randInt <= 50 && enemies[i][0] == 'green_slime') {
                     addItem("coin",enemies[i][1],enemies[i][2]);
                     currentEnemy = document.getElementById('enemy'+String(i));
                 } else if (randInt >= 1 && randInt <= 200 && enemies[i][0] == 'goblin') {
+                    addItem("coin",enemies[i][1],enemies[i][2]);
+                    currentEnemy = document.getElementById('enemy'+String(i));
+                } else if (randInt >= 1 && randInt <= 250 && enemies[i][0] == 'armored_goblin') {
                     addItem("coin",enemies[i][1],enemies[i][2]);
                     currentEnemy = document.getElementById('enemy'+String(i));
                 }
@@ -458,6 +461,7 @@ function mainFunction() {
             playerX = 0;
             playerY = 0;
             button = [1,12,'up','openLadder'];
+            changeTabTitle('DuCr : Tutorial');
             
             //creates the tutorial room
             document.getElementById("tilehost").innerHTML = "";
@@ -507,6 +511,7 @@ function mainFunction() {
             playerY = 0;
             playerXOrigin = 6;
             playerYOrigin = 2;
+            changeTabTitle("DuCr : Shop");
 
             document.getElementById("tilehost").innerHTML = "";
             tiles = [];
@@ -535,6 +540,7 @@ function mainFunction() {
             playerXOrigin=27;
             playerYOrigin=27;
             rooms = [];
+            changeTabTitle("DuCr : Zone 1 - 1")
             
             preloadImage("resources/enemies/green_slime.gif");
             preloadImage("resources/enemies/goblin.gif");
@@ -707,6 +713,7 @@ function mainFunction() {
             items = [];
             scene = 'Zone 1 - 2';
             $(".enemy").remove();
+            changeTabTitle('DuCr : Zone 1 - 2')
             
             preloadImage("resources/enemies/green_slime.gif");
             preloadImage("resources/enemies/goblin.gif")
@@ -805,10 +812,10 @@ function mainFunction() {
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,01,01,01,01,01,01,01,01,01,11],
                     [11,11,11,11,11,01,11,11,11,11,11]]);
-                    enemies.push(["green_slime", (i%5)*11+2, Math.floor(i/5)*11+3, 1, 1]);
-                    enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+3, 1, 1]);
-                    enemies.push(["green_slime", (i%5)*11+2, Math.floor(i/5)*11+7, 1, 1]);
-                    enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+7, 1, 1]);
+                    enemies.push(["green_slime", (i%5)*11+2, Math.floor(i/5)*11+2, 1, 1]);
+                    enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+2, 1, 1]);
+                    enemies.push(["green_slime", (i%5)*11+2, Math.floor(i/5)*11+8, 1, 1]);
+                    enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 1]);
                 } // creates spawn room
                 else {
                     var randInt2 = Math.floor(Math.random()*(room1Rooms.length));
@@ -888,6 +895,266 @@ function mainFunction() {
             renderEntities();
         }
     } //Zone 1 - 2
+    else if (scene=='Zone 1 - 2') {
+        if (playerX==0&&playerY==0&&ladderOpen) {
+
+            alert("Loading may take a while... Please press 'enter' and standby.")
+            //places the player
+            playerX=0;
+            playerY=0;
+            playerXOrigin=27;
+            playerYOrigin=27;
+            rooms = [];
+            enemies = [];
+            items = [];
+            scene = 'Zone 1 - 3';
+            $(".enemy").remove();
+            changeTabTitle('DuCr : Zone 1 - 3')
+            
+            preloadImage("resources/enemies/green_slime.gif");
+            preloadImage("resources/enemies/goblin.gif");
+            preloadImage("resources/enemies/armored_goblin.gif");
+            
+            //generates the rooms
+            document.getElementById("tilehost").innerHTML = "";
+            const room1Rooms = [
+                [[11,11,11,11,11,01,11,11,11,11,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,11,11,11,11,01,11,11,11,11,11]],
+                [[11,11,11,11,11,01,11,11,11,11,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,11,11,01,01,01,11,11,01,11],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [01,01,01,01,01,11,01,01,01,01,01],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [11,01,11,11,01,01,01,11,11,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,11,11,11,11,01,11,11,11,11,11]],
+                [[11,11,11,11,11,01,11,11,11,11,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,11,01,11,01,01,01,11],
+                [11,01,01,11,11,01,11,11,01,01,11],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [11,01,01,11,11,01,11,11,01,01,11],
+                [11,01,01,01,11,01,11,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,11,11,11,11,01,11,11,11,11,11]],
+                [[11,11,11,11,11,01,11,11,11,11,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,11,11,11,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [01,01,11,01,01,01,01,01,11,01,01],
+                [11,01,11,01,01,01,01,01,11,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,01,01,01,11,11,11,01,01,01,11],
+                [11,01,01,01,01,01,01,01,01,01,11],
+                [11,11,11,11,11,01,11,11,11,11,11]],
+                [[11,01,01,01,01,01,01,01,01,01,11],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [11,01,01,01,01,01,01,01,01,01,11]],
+                [[11,01,01,01,01,01,01,01,01,01,11],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [01,01,01,01,01,01,01,01,01,01,01],
+                [11,01,01,01,01,01,01,01,01,01,11]]]; // possible rooms
+            var randInt = Math.floor(Math.random()*24);
+            if (randInt == 12) {
+                randInt = 24;
+            }
+            for (var i=0;i<25;i++) {
+                if (randInt == i) { 
+                    rooms.push([
+                    [11,11,11,11,11,01,11,11,11,11,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [01,01,01,01,01,01,01,01,01,01,01],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,11,11,11,11,01,11,11,11,11,11]]); //button room
+                    enemies.push(["armored_goblin", (i%5)*11+4, Math.floor(i/5)*11+4, 3, 1]);
+                    enemies.push(["armored_goblin", (i%5)*11+6, Math.floor(i/5)*11+4, 3, 2]);
+                    enemies.push(["armored_goblin", (i%5)*11+4, Math.floor(i/5)*11+6, 3, 1]);
+                    enemies.push(["armored_goblin", (i%5)*11+6, Math.floor(i/5)*11+6, 3, 2]);
+                } // creates button room
+                else if (i == 12) {
+                    rooms.push([
+                    [11,11,11,11,11,01,11,11,11,11,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [01,01,01,01,01,21,01,01,01,01,01],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,01,01,01,01,01,01,01,01,01,11],
+                    [11,11,11,11,11,01,11,11,11,11,11]]);
+                    enemies.push(["goblin", (i%5)*11+2, Math.floor(i/5)*11+2, 1, 3]);
+                    enemies.push(["goblin", (i%5)*11+8, Math.floor(i/5)*11+2, 1, 3]);
+                    enemies.push(["goblin", (i%5)*11+2, Math.floor(i/5)*11+8, 1, 3]);
+                    enemies.push(["goblin", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 3]);
+                } // creates spawn room
+                else {
+                    var randInt2 = Math.floor(Math.random()*(room1Rooms.length));
+                    rooms.push(room1Rooms[randInt2]); // random room
+                    if (randInt2 == 1) {
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 1]);
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+7, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+7, 1, 1]);
+                    }
+                    else if (randInt2 == 2) {
+                        enemies.push(["goblin", (i%5)*11+2, Math.floor(i/5)*11+2, 1, 1]);
+                        enemies.push(["goblin", (i%5)*11+8, Math.floor(i/5)*11+2, 1, 2]);
+                        enemies.push(["goblin", (i%5)*11+2, Math.floor(i/5)*11+8, 1, 1]);
+                        enemies.push(["goblin", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 2]);
+                    }
+                    else if (randInt2 == 3) {
+                        enemies.push(["goblin", (i%5)*11+5, Math.floor(i/5)*11+5, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 1]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+7, 1, 1]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+7, 1, 2]);
+                    }
+                    else if (randInt2 == 4) {
+                        enemies.push(["armored_goblin", (i%5)*11+5, Math.floor(i/5)*11+5, 3, 1]);
+                    }
+                    else if (randInt2 == 5) {
+                        enemies.push(["goblin", (i%5)*11+5, Math.floor(i/5)*11+5, 1, 1]);
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+7, 1, 2]);
+                        enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+7, 1, 2]);
+                    }
+                }              // creates other rooms
+            } // floor creation
+            
+            // loads every room into a single list & creates outer walls
+            tiles = [];
+            for (var i=0;i<55;i++) {
+                tiles.push([]);
+            }
+            var i3=0;
+            var i4=0;
+            for (var i=0;i<55;i++) {
+                for (var i2=0;i2<5;i2++) {
+                    tiles[i] = tiles[i].concat(rooms[i2+i4][i3]);
+                }
+                i3++;
+                if (i3==11) {
+                    i3 = 0;
+                    i4+=5;
+                }
+            }
+            for (var i=0;i<55;i++) {
+                tiles[0][i] = 11;
+                tiles[54][i] = 11;
+            }
+            for (var i=0;i<55;i++) {
+                tiles[i][0] = 11;
+                tiles[i][54] = 11;
+            }
+            
+            // activates the button
+            button = [0,0,'up','openLadder'];
+            while (randInt>4) {
+                button[1]+=11;
+                randInt-=5;
+            }
+            while (randInt>0) {
+                button[0]+=11;
+                randInt-=1;
+            }
+            button[0]+=5;
+            button[1]+=5;
+
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            
+            ladderOpen = false;
+            renderEntities();
+        }
+    } //Zone 1 - 3
+    else if (scene=='Zone 1 - 3') {
+        if (playerX==0&&playerY==0&&ladderOpen) {
+
+            //places the player
+            playerX=0;
+            playerY=0;
+            playerXOrigin=27;
+            playerYOrigin=27;
+            rooms = [];
+            enemies = [];
+            items = [];
+            scene = 'Zone 1 - BOSS';
+            $(".enemy").remove();
+            changeTabTitle('DuCr : Zone 1 - BOSS')
+            
+            preloadImage("resources/enemies/green_slime.gif");
+            preloadImage("resources/enemies/goblin.gif");
+            preloadImage("resources/enemies/armored_goblin.gif");
+            preloadImage("resources/enemies/boss_king_goblin.gif")
+            
+            //generates the rooms
+            document.getElementById("tilehost").innerHTML = "";
+            
+            tiles = [];
+            tiles.push([00,00,00,00,11,11,11,11,11,00,00,00,00]);
+            tiles.push([00,00,00,00,11,00,00,00,11,00,00,00,00]);
+            tiles.push([11,11,11,11,11,00,00,00,11,11,11,11,11]);
+            tiles.push([11,00,00,00,00,00,00,00,00,00,00,00,11]);
+
+            // activates the button
+            button = [0,0,'up','openLadder'];
+            while (randInt>4) {
+                button[1]+=11;
+                randInt-=5;
+            }
+            while (randInt>0) {
+                button[0]+=11;
+                randInt-=1;
+            }
+            button[0]+=5;
+            button[1]+=5;
+
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            
+            ladderOpen = false;
+            renderEntities();
+        }
+    }
     else if (scene=='shop') {
         if (playerX==0&&playerY==-1) {
             returnToLobby();
@@ -1129,7 +1396,11 @@ function giveSaveCode() {
 }
 function renderEntities() {
     for (var i=0;i<enemies.length;i++) {
-        addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(300-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(296-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
+        if (enemies[i][0].slice(0,4) == 'boss') {
+            addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(292-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(288-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
+        } else {
+            addToBoard("<img class='enemy' src='resources/enemies/" + String(enemies[i][0]) + ".gif' style='left:" + String(300-playerXOrigin*48+enemies[i][1]*48) + "px;top:" + String(296-playerYOrigin*48+enemies[i][2]*48) + "px;' id='enemy" + String(i) + "'>");
+        }
     }
     for (var i=0;i<items.length;i++) {
         addToBoard("<img class='enemy' src='resources/items/" + String(items[i][0]) + ".png' style='left:" + String(303-playerXOrigin*48+items[i][1]*48) + "px;top:" +String(299-playerYOrigin*48+items[i][2]*48) + "px;' id='item" + String(i) + "'>");
@@ -1189,6 +1460,7 @@ function sleep(milliseconds) {
 }
 function returnToLobby() {
     scene = 'lobby';
+    changeTabTitle('DuCr');
             
     // creates the lobby room
     button = []
@@ -1241,6 +1513,9 @@ function purchase(item, type, cost) {
             // buy as item
         }
     }
+}
+function changeTabTitle(newTitle) {
+    document.getElementById('tabTitle').innerHTML = newTitle
 }
 /*
 function startLoadingScreen() {
