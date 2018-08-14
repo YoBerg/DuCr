@@ -574,6 +574,54 @@ function mainFunction() {
                     } // reorders enemy list (prevents 'gaps' that crashes the game)
                     i--;
                 }
+                else if (items[i][0]=='healing_potion_mk1') {
+                    if (inventory.includes('none')) {
+                        for (item in inventory) {
+                            if (inventory[item] == 'none') {
+                                inventory[item] = 'healing_potion_mk1';
+                                document.getElementById('inventoryItem'+String(item)).src = 'resources/inventoryItems/healing_potion_mk1.gif';
+                                break;
+                            }
+                        }
+                        items.splice(i,1);
+                        currentItem.remove();
+                        i2 = 1;
+                        while (true) {
+                            if (document.getElementById('item'+String(i+i2)) != null) {
+                                document.getElementById('item'+String(i+i2)).id = 'item'+String(i+i2-1);
+                                i2++;
+                            }
+                            else {
+                                break;
+                            }
+                        } // reorders enemy list (prevents 'gaps' that crashes the game)
+                        i--;
+                    }
+                }
+                else if (items[i][0]=='healing_potion_mk2') {
+                    if (inventory.includes('none')) {
+                        for (item in inventory) {
+                            if (inventory[item] == 'none') {
+                                inventory[item] = 'healing_potion_mk2';
+                                document.getElementById('inventoryItem'+String(item)).src = 'resources/inventoryItems/healing_potion_mk2.gif';
+                                break;
+                            }
+                        }
+                        items.splice(i,1);
+                        currentItem.remove();
+                        i2 = 1;
+                        while (true) {
+                            if (document.getElementById('item'+String(i+i2)) != null) {
+                                document.getElementById('item'+String(i+i2)).id = 'item'+String(i+i2-1);
+                                i2++;
+                            }
+                            else {
+                                break;
+                            }
+                        } // reorders enemy list (prevents 'gaps' that crashes the game)
+                        i--;
+                    }
+                }
             } //handles item pickups
         } //handles item interactions
         
@@ -708,6 +756,10 @@ function mainFunction() {
             if (lobbyUnlocks[5]) {
                 document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='left:156px;top:312px;width:48px;' id='swordText'>Sword<br>20C</p>";
                 document.getElementById("lobbyTextHost").innerHTML += "<img class='lobbyText' style='left:144px;top:336px;width:64px;height:64px;z-index:1;' id='swordImage' src='resources/weapons/sword.gif'>";
+                document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='left:242px;top:312px;width:64px;' id='healing_potion_mk1Text'>Health I<br>6C</p>";
+                document.getElementById("lobbyTextHost").innerHTML += "<img class='lobbyText' style='left:246px;top:336px;width:64px;height:64px;z-index:1;' id='healing_potion_mk1Image' src='resources/inventoryItems/healing_potion_mk1.gif'>";
+                document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='left:338px;top:312px;width:64px;' id='healing_potion_mk2Text'>Health II<br>10C</p>";
+                document.getElementById("lobbyTextHost").innerHTML += "<img class='lobbyText' style='left:342px;top:336px;width:64px;height:64px;z-index:1;' id='healing_potion_mk2Image' src='resources/inventoryItems/healing_potion_mk2.gif'>";
             }
 
             scene = 'shop';
@@ -1348,10 +1400,28 @@ function mainFunction() {
             document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
             document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
             enemies.push(['boss_goblin_king',6,5,50,11]);
+            if (!lobbyUnlocks[9]) {
+                addItem('healing_potion_mk2', 5,28);
+                addItem('healing_potion_mk2', 7,28);
+            }
             createBossHealthBar(enemies.length-1,50);
             
             ladderOpen = false;
             renderEntities();
+        }
+    }
+    else if (scene=='Zone 1 - BOSS') {
+        if (playerX==0&&playerY==-28&&ladderOpen) {
+            if (!lobbyUnlocks[9]) {
+                totalHealth += 2
+                health += 2
+                const heartCount = $(".health").length+1;
+                addToBoard("<img src='resources/misc/heart_empty.png' class='health' id='health"+String(heartCount)+"'>");
+                document.getElementById("health"+String(heartCount)).style.top = '60px';
+                document.getElementById("health"+String(heartCount)).style.left = String(756+(44*heartCount))+'px';
+            }
+            lobbyUnlocks[9] = true;
+            returnToLobby();
         }
     }
     else if (scene=='shop') {
@@ -1359,6 +1429,10 @@ function mainFunction() {
             returnToLobby();
         } else if (playerX==-3&&playerY==1&&lobbyUnlocks[5]) {
             purchase('sword', 'weapon', 20);
+        } else if (playerX==-1&&playerY==1&&lobbyUnlocks[5]&&playerMoved) {
+            purchase('healing_potion_mk1', 'item', 6);
+        } else if (playerX==1&&playerY==1&&lobbyUnlocks[5]&&playerMoved) {
+            purchase('healing_potion_mk2', 'item', 10);
         }
     } //Back to lobby
     
@@ -1610,7 +1684,7 @@ function renderEntities() {
         }
     }
     for (var i=0;i<items.length;i++) {
-        addToBoard("<img class='enemy' src='resources/items/" + String(items[i][0]) + ".png' style='left:" + String(303-playerXOrigin*48+items[i][1]*48) + "px;top:" +String(299-playerYOrigin*48+items[i][2]*48) + "px;' id='item" + String(i) + "'>");
+        addToBoard("<img class='enemy' src='resources/items/" + String(items[i][0]) + ".png' style='left:" + String(299-(playerX+playerXOrigin-items[i][1])*48) + "px;top:" +String(299-(playerY+playerYOrigin-items[i][2])*48) + "px;' id='item" + String(i) + "'>");
     }
 }
 function addItem(type, x, y) {
@@ -1716,8 +1790,15 @@ function purchase(item, type, cost) {
             document.getElementById(item+'Image').remove();
         }
     } else if (type == 'item') {
-        if (!(inventory.includes('none'))) {
-            // buy as item
+        if (inventory.includes('none') && coins >= cost) {
+            for (itemIndex in inventory) {
+                if (inventory[itemIndex] == 'none') {
+                    inventory[itemIndex] = item;
+                    document.getElementById('inventoryItem'+String(itemIndex)).src = 'resources/inventoryItems/'+item+'.gif';
+                    coins -= cost;
+                    break
+                }
+            }
         }
     }
 }
