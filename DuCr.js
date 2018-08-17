@@ -742,13 +742,30 @@ function mainFunction() {
             changeTabTitle("DuCr : Shop");
 
             document.getElementById("tilehost").innerHTML = "";
+            var st = 00
+            var sw = 10
+            if (lobbyUnlocks[14]) {
+
+            } else if (lobbyUnlocks[10]) {
+
+            } else if (lobbyUnlocks[6]) {
+
+            } else if (lobbyUnlocks[13]) {
+
+            } else if (lobbyUnlocks[9]) {
+                st = 02
+                sw = 12
+            } else if (lobbyUnlocks[5]) {
+                st = 01
+                sw = 11
+            }
             tiles = [];
-            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
-            tiles.push([11,01,01,01,01,01,20,01,01,01,01,01,11]);
-            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
-            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
-            tiles.push([11,01,01,01,01,01,01,01,01,01,01,01,11]);
-            tiles.push([11,11,11,11,11,11,11,11,11,11,11,11,11]);
+            tiles.push([sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw]);
+            tiles.push([sw,st,st,st,st,st,20,st,st,st,st,st,sw]);
+            for (var i = 0; i<3;i++) {
+                tiles.push([sw,st,st,st,st,st,st,st,st,st,st,st,sw]);
+            }
+            tiles.push([sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw,sw]);
             document.getElementById("tilehost").innerHTML = loadScreen();
 
             document.getElementById("lobbyTextHost").innerHTML = "";
@@ -779,7 +796,7 @@ function mainFunction() {
             
             //generates the rooms
             document.getElementById("tilehost").innerHTML = "";
-            const room1Rooms = [
+            const roomsConst = [
                 [[11,11,11,11,11,01,11,11,11,11,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
@@ -858,8 +875,8 @@ function mainFunction() {
                     [11,11,11,11,11,01,11,11,11,11,11]]);
                 } // creates spawn room
                 else {
-                    var randInt2 = Math.floor(Math.random()*(room1Rooms.length));
-                    rooms.push(room1Rooms[randInt2]); // random room
+                    var randInt2 = Math.floor(Math.random()*(roomsConst.length));
+                    rooms.push(roomsConst[randInt2]); // random room
                     if (randInt2 == 1) {
                         enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 2]);
                         enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 2]);
@@ -925,6 +942,124 @@ function mainFunction() {
             scene = 'Zone 1 - 1';
             renderEntities();
         } //Zone 1 - 1
+        if (playerX==-1&&playerY==2&&lobbyUnlocks[5]) {
+            alert("Loading may take a while... Please press 'enter' and standby.")
+            //places the player
+            playerX=0;
+            playerY=0;
+            playerXOrigin=27;
+            playerYOrigin=27;
+            rooms = [];
+            changeTabTitle("DuCr : Zone 2 - 1")
+            
+            const roomsConst = [
+                [
+                    [12,12,12,12,12,02,12,12,12,12,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [02,02,02,02,02,02,02,02,02,02,02],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,12,12,12,12,02,12,12,12,12,12],
+                ]
+            ]
+            
+            //generates the rooms
+            document.getElementById("tilehost").innerHTML = "";
+            
+            var randInt = Math.floor(Math.random()*24);
+            if (randInt == 12) {
+                randInt = 24;
+            }
+            for (var i=0;i<25;i++) {
+                if (randInt == i) { 
+                    rooms.push([
+                        [12,12,12,12,12,02,12,12,12,12,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [02,02,02,02,02,02,02,02,02,02,02],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,02,02,02,02,02,02,02,02,02,12],
+                        [12,12,12,12,12,02,12,12,12,12,12]]); //button room
+                } // creates button room
+                else if (i == 12) {
+                    rooms.push([
+                    [12,12,12,12,12,02,12,12,12,12,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [02,02,02,02,02,21,02,02,02,02,02],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,02,02,02,02,02,02,02,02,02,12],
+                    [12,12,12,12,12,02,12,12,12,12,12],]);
+                } // creates spawn room
+                else {
+                    var randInt2 = Math.floor(Math.random()*(roomsConst.length));
+                    rooms.push(roomsConst[randInt2]); // random room
+                    if (randInt2 == 1) {
+                        
+                    }
+                }              // creates other rooms
+            } // floor creation
+            
+            // loads every room into a single list & creates outer walls
+            tiles = [];
+            for (var i=0;i<55;i++) {
+                tiles.push([]);
+            }
+            var i3=0;
+            var i4=0;
+            for (var i=0;i<55;i++) {
+                for (var i2=0;i2<5;i2++) {
+                    tiles[i] = tiles[i].concat(rooms[i2+i4][i3]);
+                }
+                i3++;
+                if (i3==11) {
+                    i3 = 0;
+                    i4+=5;
+                }
+            }
+            for (var i=0;i<55;i++) {
+                tiles[0][i] = 12;
+                tiles[54][i] = 12;
+            }
+            for (var i=0;i<55;i++) {
+                tiles[i][0] = 12;
+                tiles[i][54] = 12;
+            }
+
+            // activates the button
+            button = [0,0,'up','openLadder'];
+            while (randInt>4) {
+                button[1]+=11;
+                randInt-=5;
+            }
+            while (randInt>0) {
+                button[0]+=11;
+                randInt-=1;
+            }
+            button[0]+=5;
+            button[1]+=5;
+            
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            
+            ladderOpen = false;
+            
+            scene = 'Zone 2 - 1';
+            renderEntities();
+        } //Zone 2 - 1
     }
     else if (scene=='tutorial') {
         if (ladderOpen==true&&playerX==0&&playerY==15) {
@@ -952,7 +1087,7 @@ function mainFunction() {
             
             //generates the rooms
             document.getElementById("tilehost").innerHTML = "";
-            const room1Rooms = [
+            const roomsConst = [
                 [[11,11,11,11,11,01,11,11,11,11,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
@@ -1050,8 +1185,8 @@ function mainFunction() {
                     enemies.push(["green_slime", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 1]);
                 } // creates spawn room
                 else {
-                    var randInt2 = Math.floor(Math.random()*(room1Rooms.length));
-                    rooms.push(room1Rooms[randInt2]); // random room
+                    var randInt2 = Math.floor(Math.random()*(roomsConst.length));
+                    rooms.push(roomsConst[randInt2]); // random room
                     if (randInt2 == 1) {
                         enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 2]);
                         enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 1]);
@@ -1149,7 +1284,7 @@ function mainFunction() {
             
             //generates the rooms
             document.getElementById("tilehost").innerHTML = "";
-            const room1Rooms = [
+            const roomsConst = [
                 [[11,11,11,11,11,01,11,11,11,11,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
                 [11,01,01,01,01,01,01,01,01,01,11],
@@ -1258,8 +1393,8 @@ function mainFunction() {
                     enemies.push(["goblin", (i%5)*11+8, Math.floor(i/5)*11+8, 1, 3]);
                 } // creates spawn room
                 else {
-                    var randInt2 = Math.floor(Math.random()*(room1Rooms.length));
-                    rooms.push(room1Rooms[randInt2]); // random room
+                    var randInt2 = Math.floor(Math.random()*(roomsConst.length));
+                    rooms.push(roomsConst[randInt2]); // random room
                     if (randInt2 == 1) {
                         enemies.push(["green_slime", (i%5)*11+3, Math.floor(i/5)*11+3, 1, 2]);
                         enemies.push(["green_slime", (i%5)*11+7, Math.floor(i/5)*11+3, 1, 1]);
@@ -1409,7 +1544,7 @@ function mainFunction() {
             ladderOpen = false;
             renderEntities();
         }
-    }
+    } //Zone 1- BOSS
     else if (scene=='Zone 1 - BOSS') {
         if (playerX==0&&playerY==-28&&ladderOpen) {
             if (!lobbyUnlocks[9]) {
@@ -1423,7 +1558,7 @@ function mainFunction() {
             lobbyUnlocks[9] = true;
             returnToLobby();
         }
-    }
+    } //Back to lobby
     else if (scene=='shop') {
         if (playerX==0&&playerY==-1) {
             returnToLobby();
@@ -1502,10 +1637,21 @@ function loadGame() {
     addToBoard("<div id='lobbyTextHost'></div>");
     
     //Adding ladder labels
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
+    if (lobbyUnlocks[1]) {
+        document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
+    }
+    if (lobbyUnlocks[5]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
+    }
+    if (lobbyUnlocks[9]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:372px;left:248px;width:48px;'>Zone 2</p>";
+    }
+    if (lobbyUnlocks[0]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
+    }
+    if (lobbyUnlocks[3]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
+    }
     addToBoard("<h2 id='statusNotifier'></h2>")
 }
 function loadScreen() {
@@ -1519,11 +1665,17 @@ function loadScreen() {
             else if (tiles[i][i2]==01) {
                 newScreen += "dirtFloor.png";
             }
+            else if (tiles[i][i2]==02) {
+                newScreen += "stoneFloor.png";
+            }
             else if (tiles[i][i2]==10) {
                 newScreen += "dirtPit.png";
             }
             else if (tiles[i][i2]==11) {
                 newScreen += "woodenWall.png";
+            }
+            else if (tiles[i][i2]==12) {
+                newScreen += "stoneWall.png";
             }
             else if (tiles[i][i2]==20) {
                 newScreen += "ladder_open.png' id='ladder";
@@ -1765,11 +1917,21 @@ function returnToLobby() {
     
     // loads the screen and the text
     document.getElementById("tilehost").innerHTML = loadScreen();
-    document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
-    document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
-    
+    if (lobbyUnlocks[1]) {
+        document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
+    }
+    if (lobbyUnlocks[5]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:276px;left:248px;width:48px;'>Zone 1</p>";
+    }
+    if (lobbyUnlocks[9]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:372px;left:248px;width:48px;'>Zone 2</p>";
+    }
+    if (lobbyUnlocks[0]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:152px;width:48px;'>Save</p>";
+    }
+    if (lobbyUnlocks[3]) {
+        document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:180px;left:440px;width:48px;'>Shop</p>";
+    }
     // places the player
     playerXOrigin=6;
     playerYOrigin=6;

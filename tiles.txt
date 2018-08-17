@@ -1,7 +1,7 @@
 00 - Blank (required for blank spaces on tile space)
 ---------- Floors
 01 - Dirt Floor
-02
+02 - Stone Floor
 03
 04
 05
@@ -12,7 +12,7 @@
 ---------- Walls
 10 - Dirt Pit
 11 - Wooden Wall
-12
+12 - Stone Wall
 13
 14
 15
