@@ -112,7 +112,69 @@ document.getElementById("MenuLoadFromFile").addEventListener("click", function()
     "<button class='fileSlot' id='SaveFile4'>" + (getCookie('saveFile4') != null ? "File 4 - " + getCookie('saveFile4').split('+')[6] : "File 4 - <i>Empty!</i>") + "</button><br>"+
     "<button class='fileSlot' id='SaveFile5'>" + (getCookie('saveFile5') != null ? "File 5 - " + getCookie('saveFile5').split('+')[6] : "File 5 - <i>Empty!</i>") + "</button><br></center>");
     $('.fileSlot')[0].addEventListener("click", function() {
-
+        const loadFile = getCookie('saveFile1').split('+');
+        for (i in lobbyUnlocks) {
+            lobbyUnlocks[i] = loadFile[0].split(',')[i] == 'true' ? true : false;
+        }
+        weapon = loadFile[1];
+        health = loadFile[2];
+        totalHealth = loadFile[3];
+        coins = loadFile[4];
+        inventory = loadFile[5].split(',');
+        playerName = loadFile[6];
+        loadGame();
+    });
+    $('.fileSlot')[1].addEventListener("click", function() {
+        const loadFile = getCookie('saveFile2').split('+');
+        for (i in lobbyUnlocks) {
+            lobbyUnlocks[i] = loadFile[0].split(',')[i] == 'true' ? true : false;
+        }
+        weapon = loadFile[1];
+        health = loadFile[2];
+        totalHealth = loadFile[3];
+        coins = loadFile[4];
+        inventory = loadFile[5].split(',');
+        playerName = loadFile[6];
+        loadGame();
+    });
+    $('.fileSlot')[2].addEventListener("click", function() {
+        const loadFile = getCookie('saveFile3').split('+');
+        for (i in lobbyUnlocks) {
+            lobbyUnlocks[i] = loadFile[0].split(',')[i] == 'true' ? true : false;
+        }
+        weapon = loadFile[1];
+        health = loadFile[2];
+        totalHealth = loadFile[3];
+        coins = loadFile[4];
+        inventory = loadFile[5].split(',');
+        playerName = loadFile[6];
+        loadGame();
+    });
+    $('.fileSlot')[3].addEventListener("click", function() {
+        const loadFile = getCookie('saveFile4').split('+');
+        for (i in lobbyUnlocks) {
+            lobbyUnlocks[i] = loadFile[0].split(',')[i] == 'true' ? true : false;
+        }
+        weapon = loadFile[1];
+        health = loadFile[2];
+        totalHealth = loadFile[3];
+        coins = loadFile[4];
+        inventory = loadFile[5].split(',');
+        playerName = loadFile[6];
+        loadGame();
+    });
+    $('.fileSlot')[4].addEventListener("click", function() {
+        const loadFile = getCookie('saveFile5').split('+');
+        for (i in lobbyUnlocks) {
+            lobbyUnlocks[i] = loadFile[0].split(',')[i] == 'true' ? true : false;
+        }
+        weapon = loadFile[1];
+        health = loadFile[2];
+        totalHealth = loadFile[3];
+        coins = loadFile[4];
+        inventory = loadFile[5].split(',');
+        playerName = loadFile[6];
+        loadGame();
     });
 });
 //mainFunction runs every 10 ms
