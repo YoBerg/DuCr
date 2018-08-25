@@ -1,5 +1,6 @@
 first 16 values : every number represents an open door (standard : 1100 0100 0000 0000)
 next 2 values : weapon id (standard : 01)
 next 14 values : heart id + canister count(up to 10) (standard : 1113333333 06)
-next 3 values : coin coint
+next 6 values : coin count
+next 20 values : inventory
 rest of values : character name (01 = a, 26 = z)

@@ -40,6 +40,11 @@
     text-align:left;
     font-family: 'Fondamento';
     z-index:4;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    overflow: hidden;
+    outline:none;
 }
 .lobbyText {
     position:absolute;
@@ -62,6 +67,18 @@
     background: rgb(00,00,00);
     background: rgba(00,00,00,0);
     background-image:url(resources/misc/menuBoard.png);
+    background-repeat:no-repeat;
+    background-position:center;
+}
+.fileSlot {
+    height:100px;
+    width:200px;
+    border:0px;
+    text-align:center;
+    font-family: 'Fondamento';
+    background: rgb(00,00,00);
+    background: rgba(00,00,00,0);
+    background-image:url(resources/misc/menuBoard2x.png);
     background-repeat:no-repeat;
     background-position:center;
 }

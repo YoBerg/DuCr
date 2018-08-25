@@ -30,6 +30,7 @@ var inventory = ["none","none","none","none","none","none","none","none","none",
 var playerCooldownTimer = 0;
 var bossSpecials = {'boss_goblin_king':0};
 var originalHealth = 0; // For Boss Health Bar
+var dataToSave = '';
 
 //Creates and manages the login screen
 document.getElementById("MenuNew").addEventListener("click", function() {
@@ -37,11 +38,14 @@ document.getElementById("MenuNew").addEventListener("click", function() {
     addToBoard("<h1 class='Title' id='Title'>Choose Your Name</h1><br><center><input class='input' id='nameSelection'><br><button class='input' id='nameConfirm'>Confirm</button></center>");
     document.getElementById("nameConfirm").addEventListener("click", function() {
         playerName = String(document.getElementById("nameSelection").value);
-        if (playerName.length<3) {
-            alert('Error! Please have a player name of at least 3 characters');
+        if (playerName.length<1) {
+            alert('Error! Please have a player name of at least 1 character.');
         }
-        else if (playerName.length>10) {
-            alert('Error! Please have a player name of at most 10 characters');
+        else if (playerName.length>12) {
+            alert('Error! Please have a player name of at most 12 characters.');
+        }
+        else if (playerName.includes('+')||playerName.includes(';')||playerName.includes('=')) {
+            alert("Error! Please do not include the character(s) ';', '=', or '+'.")
         }
         else {
             if (playerName=='Sewell') {
@@ -97,6 +101,18 @@ document.getElementById("MenuContinue").addEventListener("click", function() {
         }
         playerName = code.slice(56,);
         loadGame();
+    });
+});
+document.getElementById("MenuLoadFromFile").addEventListener("click", function() {
+    resetBoard();
+    addToBoard("<h1 class='Title' id='Title'>Pick a File</h1><br>"+
+    "<center><button class='fileSlot' id='SaveFile1'>" + (getCookie('saveFile1') != null ? "File 1 - " + getCookie('saveFile1').split('+')[6] : "File 1 - <i>Empty!</i>") + "</button><br>"+
+    "<button class='fileSlot' id='SaveFile2'>" + (getCookie('saveFile2') != null ? "File 2 - " + getCookie('saveFile2').split('+')[6] : "File 2 - <i>Empty!</i>") + "</button><br>"+
+    "<button class='fileSlot' id='SaveFile3'>" + (getCookie('saveFile3') != null ? "File 3 - " + getCookie('saveFile3').split('+')[6] : "File 3 - <i>Empty!</i>") + "</button><br>"+
+    "<button class='fileSlot' id='SaveFile4'>" + (getCookie('saveFile4') != null ? "File 4 - " + getCookie('saveFile4').split('+')[6] : "File 4 - <i>Empty!</i>") + "</button><br>"+
+    "<button class='fileSlot' id='SaveFile5'>" + (getCookie('saveFile5') != null ? "File 5 - " + getCookie('saveFile5').split('+')[6] : "File 5 - <i>Empty!</i>") + "</button><br></center>");
+    $('.fileSlot')[0].addEventListener("click", function() {
+
     });
 });
 //mainFunction runs every 10 ms
@@ -672,14 +688,55 @@ function mainFunction() {
     if (scene=='lobby') {
         if (playerX==-3&&playerY==-2&&lobbyUnlocks[0]) {
             giveSaveCode();
-            
+            dataToSave = '';
+            dataToSave += lobbyUnlocks+'+';
+            dataToSave += weapon+'+';
+            dataToSave += health+'+';
+            dataToSave += totalHealth+'+';
+            dataToSave += coins+'+';
+            dataToSave += inventory+'+';
+            dataToSave += playerName;
             //updating player location (so save doesn't infinitely activate)
             playerX = 0;
             playerY = 0;
-            
-            for (var i=0;i<textLoc.length;i++) {
-                textLoc[i].style.left = String(Number(textLoc[i].style.left.slice(0,textLoc[i].style.left.length-2))-144)+'px';
-                textLoc[i].style.top = String(Number(textLoc[i].style.top.slice(0,textLoc[i].style.top.length-2))-96)+'px';
+            if ($('#saveToFile1')[0]) { $('#saveToFile1')[0].remove() }
+            if ($('#saveToFile2')[0]) { $('#saveToFile2')[0].remove() }
+            if ($('#saveToFile3')[0]) { $('#saveToFile3')[0].remove() }
+            if ($('#saveToFile4')[0]) { $('#saveToFile4')[0].remove() }
+            if ($('#saveToFile5')[0]) { $('#saveToFile5')[0].remove() }
+            addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:530px' id='saveToFile1'>Save to File 1 (" + (getCookie('saveFile1') != null ? "Found: " + getCookie('saveFile1').split('+')[6] : "Empty!") + ")</button>");
+            addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:554px' id='saveToFile2'>Save to File 2 (" + (getCookie('saveFile2') != null ? "Found: " + getCookie('saveFile2').split('+')[6] : "Empty!") + ")</button>");
+            addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:578px' id='saveToFile3'>Save to File 3 (" + (getCookie('saveFile3') != null ? "Found: " + getCookie('saveFile3').split('+')[6] : "Empty!") + ")</button>");
+            addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:602px' id='saveToFile4'>Save to File 4 (" + (getCookie('saveFile4') != null ? "Found: " + getCookie('saveFile4').split('+')[6] : "Empty!") + ")</button>");
+            addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:626px' id='saveToFile5'>Save to File 5 (" + (getCookie('saveFile5') != null ? "Found: " + getCookie('saveFile5').split('+')[6] : "Empty!") + ")</button>");
+            $('#saveToFile1')[0].addEventListener("click", function() {
+                this.remove()
+                setCookie('saveFile1',dataToSave,365);
+                alert('Wrote last saved data to File 1! The data will remain for 365 days.');
+            });
+            $('#saveToFile2')[0].addEventListener("click", function() {
+                this.remove()
+                setCookie('saveFile2',dataToSave,365);
+                alert('Wrote last saved data to File 2! The data will remain for 365 days.');
+            });
+            $('#saveToFile3')[0].addEventListener("click", function() {
+                this.remove()
+                setCookie('saveFile3',dataToSave,365);
+                alert('Wrote last saved data to File 3! The data will remain for 365 days.');
+            });
+            $('#saveToFile4')[0].addEventListener("click", function() {
+                this.remove()
+                setCookie('saveFile4',dataToSave,365);
+                alert('Wrote last saved data to File 4! The data will remain for 365 days.');
+            });
+            $('#saveToFile5')[0].addEventListener("click", function() {
+                this.remove()
+                setCookie('saveFile5',dataToSave,365);
+                alert('Wrote last saved data to File 5! The data will remain for 365 days.');
+            });
+            for (var text = 0;text<$('.lobbyText').length;text++) {
+                $('.lobbyText')[text].style.left = String(Number($('.lobbyText')[text].style.left.slice(0,-2)) - 144)+'px';
+                $('.lobbyText')[text].style.top = String(Number($('.lobbyText')[text].style.top.slice(0,-2)) - 96)+'px';
             } //moving the locations of the tiles to adjust to the player's new location
             
         }// Save
@@ -728,6 +785,7 @@ function mainFunction() {
             document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:695px;left:195px;'>Move onto the dummy to attack!</p>";
             document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:743px;left:230px;'>Move onto an item to pick it up!</p>";
             document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:791px;left:205px;'>You may have to press a button!</p>";
+            document.getElementById("lobbyTextHost").innerHTML += "<p class='lobbyText' style='top:839px;left:205px;'>You can use a potion by pressing its numpad key!</p>";
             
             renderEntities();
             lobbyUnlocks[1] = false;
@@ -1052,8 +1110,8 @@ function mainFunction() {
             button[0]+=5;
             button[1]+=5;
             
-            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen
-            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages
+            document.getElementById("tilehost").innerHTML = loadScreen(); // places rooms on the screen.
+            document.getElementById("lobbyTextHost").innerHTML = ''; // clears lingering text from other stages.
             
             ladderOpen = false;
             
@@ -1917,6 +1975,7 @@ function returnToLobby() {
     
     // loads the screen and the text
     document.getElementById("tilehost").innerHTML = loadScreen();
+    document.getElementById("lobbyTextHost").innerHTML = "";
     if (lobbyUnlocks[1]) {
         document.getElementById("lobbyTextHost").innerHTML = "<p class='lobbyText' style='top:180px;left:248px;width:48px;'>Tutorial</p>";
     }
@@ -1982,6 +2041,22 @@ function removeHealthBar() {
     document.getElementById('healthBarBorder').remove();
     document.getElementById('healthBar').remove();
     document.getElementById('healthBarIcon').remove();
+}
+function setCookie(cname, cvalue) {
+    document.cookie = String(cname + "=" + cvalue + ";");
+}
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+function eraseCookie(name) {   
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 /*
 function startLoadingScreen() {
