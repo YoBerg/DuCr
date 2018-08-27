@@ -82,6 +82,15 @@
     background-repeat:no-repeat;
     background-position:center;
 }
+.eraseFile {
+    border:0px;
+    text-align:center;
+    font-family: 'Fondamento';
+    background: rgba(0, 0, 0, 0);
+    color:#e5a912;
+    text-shadow:3px 3px #161616;
+    font-size: 24px;
+}
 .char {
     position:absolute;
     margin:0px;

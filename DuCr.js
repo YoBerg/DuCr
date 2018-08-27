@@ -110,7 +110,12 @@ document.getElementById("MenuLoadFromFile").addEventListener("click", function()
     "<button class='fileSlot' id='SaveFile2'>" + (getCookie('saveFile2') != null ? "File 2 - " + getCookie('saveFile2').split('+')[6] : "File 2 - <i>Empty!</i>") + "</button><br>"+
     "<button class='fileSlot' id='SaveFile3'>" + (getCookie('saveFile3') != null ? "File 3 - " + getCookie('saveFile3').split('+')[6] : "File 3 - <i>Empty!</i>") + "</button><br>"+
     "<button class='fileSlot' id='SaveFile4'>" + (getCookie('saveFile4') != null ? "File 4 - " + getCookie('saveFile4').split('+')[6] : "File 4 - <i>Empty!</i>") + "</button><br>"+
-    "<button class='fileSlot' id='SaveFile5'>" + (getCookie('saveFile5') != null ? "File 5 - " + getCookie('saveFile5').split('+')[6] : "File 5 - <i>Empty!</i>") + "</button><br></center>");
+    "<button class='fileSlot' id='SaveFile5'>" + (getCookie('saveFile5') != null ? "File 5 - " + getCookie('saveFile5').split('+')[6] : "File 5 - <i>Empty!</i>") + "</button><br></center>"+
+    "<button class='eraseFile' id='EraseFile1' style='position:absolute;left:720px;top:140px;'>X</button>"+
+    "<button class='eraseFile' id='EraseFile2' style='position:absolute;left:720px;top:240px;'>X</button>"+
+    "<button class='eraseFile' id='EraseFile3' style='position:absolute;left:720px;top:340px;'>X</button>"+
+    "<button class='eraseFile' id='EraseFile4' style='position:absolute;left:720px;top:440px;'>X</button>"+
+    "<button class='eraseFile' id='EraseFile5' style='position:absolute;left:720px;top:540px;'>X</button>");
     $('.fileSlot')[0].addEventListener("click", function() {
         const loadFile = getCookie('saveFile1').split('+');
         for (i in lobbyUnlocks) {
@@ -175,6 +180,36 @@ document.getElementById("MenuLoadFromFile").addEventListener("click", function()
         inventory = loadFile[5].split(',');
         playerName = loadFile[6];
         loadGame();
+    });
+    $('.eraseFile')[0].addEventListener("click", function() {
+        if(confirm("Delete File 1?")) {
+            eraseCookie('saveFile1');
+            $('.fileSlot')[0].innerHTML = 'File 1 - <i>Empty</i>'
+        }
+    });
+    $('.eraseFile')[1].addEventListener("click", function() {
+        if(confirm("Delete File 2?")) {
+            eraseCookie('saveFile2');
+            $('.fileSlot')[1].innerHTML = 'File 2 - <i>Empty</i>'
+        }
+    });
+    $('.eraseFile')[2].addEventListener("click", function() {
+        if(confirm("Delete File 3?")) {
+            eraseCookie('saveFile3');
+            $('.fileSlot')[2].innerHTML = 'File 3 - <i>Empty</i>'
+        }
+    });
+    $('.eraseFile')[3].addEventListener("click", function() {
+        if(confirm("Delete File 4?")) {
+            eraseCookie('saveFile4');
+            $('.fileSlot')[3].innerHTML = 'File 4 - <i>Empty</i>'
+        }
+    });
+    $('.eraseFile')[4].addEventListener("click", function() {
+        if(confirm("Delete File 5?")) {
+            eraseCookie('saveFile5');
+            $('.fileSlot')[4].innerHTML = 'File 5 - <i>Empty</i>'
+        }
     });
 });
 //mainFunction runs every 10 ms
@@ -772,29 +807,69 @@ function mainFunction() {
             addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:602px' id='saveToFile4'>Save to File 4 (" + (getCookie('saveFile4') != null ? "Found: " + getCookie('saveFile4').split('+')[6] : "Empty!") + ")</button>");
             addToBoard("<button class='sideBarText' style='color:#e5a912;text-shadow:1px 1px #161616;left:800px;top:626px' id='saveToFile5'>Save to File 5 (" + (getCookie('saveFile5') != null ? "Found: " + getCookie('saveFile5').split('+')[6] : "Empty!") + ")</button>");
             $('#saveToFile1')[0].addEventListener("click", function() {
-                this.remove()
-                setCookie('saveFile1',dataToSave,365);
-                alert('Wrote last saved data to File 1! The data will remain for 365 days.');
+                if (getCookie('saveFile1') != null) {
+                    if (confirm('Overwrite saved data in File 1?')) {
+                        this.remove()
+                        setCookie('saveFile1',dataToSave,365);
+                        alert('Wrote last saved data to File 1! The data will remain for 365 days.');
+                    }
+                } else {
+                    this.remove()
+                    setCookie('saveFile1',dataToSave,365);
+                    alert('Wrote last saved data to File 1! The data will remain for 365 days.');
+                }
             });
             $('#saveToFile2')[0].addEventListener("click", function() {
-                this.remove()
-                setCookie('saveFile2',dataToSave,365);
-                alert('Wrote last saved data to File 2! The data will remain for 365 days.');
+                if (getCookie('saveFile2') != null) {
+                    if (confirm('Overwrite saved data in File 2?')) {
+                        this.remove()
+                        setCookie('saveFile2',dataToSave,365);
+                        alert('Wrote last saved data to File 2! The data will remain for 365 days.');
+                    }
+                } else {
+                    this.remove()
+                    setCookie('saveFile2',dataToSave,365);
+                    alert('Wrote last saved data to File 2! The data will remain for 365 days.');
+                }
             });
             $('#saveToFile3')[0].addEventListener("click", function() {
-                this.remove()
-                setCookie('saveFile3',dataToSave,365);
-                alert('Wrote last saved data to File 3! The data will remain for 365 days.');
+                if (getCookie('saveFile3') != null) {
+                    if (confirm('Overwrite saved data in File 3?')) {
+                        this.remove()
+                        setCookie('saveFile3',dataToSave,365);
+                        alert('Wrote last saved data to File 3! The data will remain for 365 days.');
+                    }
+                } else {
+                    this.remove()
+                    setCookie('saveFile3',dataToSave,365);
+                    alert('Wrote last saved data to File 3! The data will remain for 365 days.');
+                }
             });
             $('#saveToFile4')[0].addEventListener("click", function() {
-                this.remove()
-                setCookie('saveFile4',dataToSave,365);
-                alert('Wrote last saved data to File 4! The data will remain for 365 days.');
+                if (getCookie('saveFile4') != null) {
+                    if (confirm('Overwrite saved data in File 4?')) {
+                        this.remove()
+                        setCookie('saveFile4',dataToSave,365);
+                        alert('Wrote last saved data to File 4! The data will remain for 365 days.');
+                    }
+                } else {
+                    this.remove()
+                    setCookie('saveFile4',dataToSave,365);
+                    alert('Wrote last saved data to File 4! The data will remain for 365 days.');
+                }
             });
             $('#saveToFile5')[0].addEventListener("click", function() {
-                this.remove()
-                setCookie('saveFile5',dataToSave,365);
-                alert('Wrote last saved data to File 5! The data will remain for 365 days.');
+                if (getCookie('saveFile3') != null) {
+                    if (confirm('Overwrite saved data in File 3?')) {
+                        this.remove()
+                        setCookie('saveFile5',dataToSave,365);
+                        alert('Wrote last saved data to File 5! The data will remain for 365 days.');
+                    }
+                } else {
+                    this.remove()
+                    setCookie('saveFile5',dataToSave,365);
+                    alert('Wrote last saved data to File 5! The data will remain for 365 days.');
+                }
             });
             for (var text = 0;text<$('.lobbyText').length;text++) {
                 $('.lobbyText')[text].style.left = String(Number($('.lobbyText')[text].style.left.slice(0,-2)) - 144)+'px';
